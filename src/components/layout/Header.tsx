@@ -48,7 +48,7 @@ export function Header() {
           <button className="nx-icon nx-mob" aria-label="Open menu" onClick={() => setMobile(true)} style={{ marginLeft: -10 }}><IconMenu /></button>
           <button className="nx-link nx-desk" aria-expanded={mega} onClick={() => { setMega(!mega); setSearch(false); }} onMouseEnter={() => { setMega(true); setSearch(false); }}>Shop</button>
           {NAV.map((n) => (
-            <Link key={n.href} className="nx-link nx-desk" href={n.href} aria-current={path === n.href.split("?")[0] ? "page" : undefined}>{n.label}</Link>
+            <Link key={n.href} className="nx-link nx-desk" href={n.href} aria-current={path === n.href || path.startsWith(n.href + "/") ? "page" : undefined}>{n.label}</Link>
           ))}
         </nav>
         <Link href="/" aria-label="Nestora home" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, lineHeight: 1 }}>
@@ -58,8 +58,8 @@ export function Header() {
         <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 2 }}>
           <button className="nx-icon" aria-label="Search" aria-expanded={search} onClick={() => { setSearch(!search); setMega(false); }}><IconSearch /></button>
           <Link className="nx-icon nx-desk" href="/account" aria-label="Account"><IconUser /></Link>
-          <Link className="nx-icon" href="/wishlist" aria-label={`Wishlist, ${wishCount} items`}><IconHeart />{wishCount > 0 && <span className="nx-badge">{wishCount}</span>}</Link>
-          <button className="nx-icon" aria-label={`Shopping bag, ${cartCount} items`} onClick={() => openCart(true)}><IconBag />{cartCount > 0 && <span className="nx-badge" key={cartCount}>{cartCount}</span>}</button>
+          <Link className="nx-icon" href="/wishlist" aria-label={`Wishlist, ${wishCount} ${wishCount === 1 ? "item" : "items"}`}><IconHeart />{wishCount > 0 && <span className="nx-badge">{wishCount}</span>}</Link>
+          <button className="nx-icon" aria-label={`Shopping bag, ${cartCount} ${cartCount === 1 ? "item" : "items"}`} onClick={() => openCart(true)}><IconBag />{cartCount > 0 && <span className="nx-badge" key={cartCount}>{cartCount}</span>}</button>
         </div>
       </div>
 

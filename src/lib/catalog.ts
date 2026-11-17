@@ -64,5 +64,74 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const getProduct = (id: string) => PRODUCTS.find((x) => x.id === id);
+export const getProductBySlug = (slug: string) => PRODUCTS.find((x) => x.slug === slug);
+export const getCategory = (slug: string) => CATEGORIES.find((x) => x.slug === slug);
 export const featuredProducts = () => PRODUCTS.slice(0, 4);
 export const newArrivals = () => PRODUCTS.slice(4, 11);
+
+/** Listing headline (two parts, second in italic terracotta) + intro, from the approved Shop design. */
+export const CATEGORY_COPY: Record<string, [string, string, string]> = {
+  all: ["All", "products", "Furniture, lighting and objects chosen to live well together — and to last."],
+  "living-room": ["Living", "Room", "Deep sofas, honest tables and soft light for the room you gather in."],
+  bedroom: ["The", "Bedroom", "Washed linen, warm wood and calm forms for slower mornings."],
+  "kitchen-dining": ["Kitchen &", "Dining", "Tables for long dinners and stoneware made for every day."],
+  "home-decor": ["Home", "Décor", "Hand-thrown vessels and quiet objects that finish a room."],
+  lighting: ["Warm", "Lighting", "Pleated linen, rattan and brass — light that feels like evening."],
+  furniture: ["Considered", "Furniture", "Chairs and tables in solid wood and natural upholstery."],
+  storage: ["Quiet", "Storage", "Cabinets and shelves that keep life beautifully in order."],
+  outdoor: ["Outdoor", "Living", "Planters and pieces for balconies, rooftops and gardens."],
+};
+
+export type Collection = { slug: string; title: [string, string]; intro: string; kind: ArtKind; fill: string; bg: string; ids: string[] };
+export const COLLECTIONS: Collection[] = [
+  { slug: "the-linen-edit", title: ["The Linen", "Edit"], intro: "Soft, slow, lived-in — washed linen across sofas, beds and light.", kind: "sofa", fill: "#8E9A89", bg: "#E9DFD0", ids: ["halden", "luma", "sorrel", "nara"] },
+  { slug: "sage-reading-corner", title: ["The Sage", "Reading Corner"], intro: "Everything from our Shop the Room scene, ready to ship together.", kind: "chair", fill: "#C68C70", bg: "#DFE3DA", ids: ["halden", "orla", "sorrel", "mira"] },
+  { slug: "long-dinners", title: ["Made for", "Long Dinners"], intro: "A generous table, honest stoneware and a light worth lingering under.", kind: "table", fill: "#C9AE8A", bg: "#E6E3DA", ids: ["kiri", "sela", "ellis", "tala"] },
+  { slug: "under-10000", title: ["Under", "৳ 10,000"], intro: "Small pieces that change a room — all under ten thousand taka.", kind: "vase", fill: "#C68C70", bg: "#EFE6D8", ids: ["sorrel", "mira", "sela", "olive", "tala"] },
+];
+export const getCollection = (slug: string) => COLLECTIONS.find((c) => c.slug === slug);
+
+export const TONES: { key: string; label: string; hex: string; names: string[] }[] = [
+  { key: "neutral", label: "Neutrals", hex: "#E4D6C1", names: ["Oat", "Ivory", "Bouclé", "Chalk", "Travertine", "Ash"] },
+  { key: "green", label: "Greens", hex: "#8E9A89", names: ["Sage", "Moss"] },
+  { key: "warm", label: "Warm", hex: "#C68C70", names: ["Clay", "Terracotta", "Rust"] },
+  { key: "wood", label: "Wood", hex: "#C9AE8A", names: ["Natural oak", "Smoked oak", "Walnut", "Oak", "Natural"] },
+  { key: "dark", label: "Dark", hex: "#4A4B47", names: ["Charcoal", "Black"] },
+];
+export const PRICE_BANDS = [
+  { key: "u10", label: "Under ৳ 10,000", min: 0, max: 9999 },
+  { key: "m50", label: "৳ 10,000 – 50,000", min: 10000, max: 50000 },
+  { key: "o50", label: "Over ৳ 50,000", min: 50001, max: Infinity },
+] as const;
+export const SORTS = [
+  { key: "featured", label: "Featured" },
+  { key: "new", label: "Newest" },
+  { key: "bestsellers", label: "Best sellers" },
+  { key: "low", label: "Price: low to high" },
+  { key: "high", label: "Price: high to low" },
+] as const;
+
+export type ListingQuery = { category?: string; ids?: string[]; q?: string; sort?: string; price?: string; tone?: string[]; isNew?: boolean; sale?: boolean };
+
+export function queryProducts(f: ListingQuery): Product[] {
+  const band = PRICE_BANDS.find((b) => b.key === f.price);
+  const toneNames = TONES.filter((t) => f.tone?.includes(t.key)).flatMap((t) => t.names);
+  const q = f.q?.trim().toLowerCase();
+  let list = PRODUCTS.filter((p) =>
+    (!f.category || p.category === f.category) &&
+    (!f.ids || f.ids.includes(p.id)) &&
+    (!q || `${p.name} ${p.meta} ${p.type} ${getCategory(p.category)?.name ?? ""} ${p.material}`.toLowerCase().includes(q)) &&
+    (!band || (p.price >= band.min && p.price <= band.max)) &&
+    (!toneNames.length || p.colors.some((c) => toneNames.includes(c.name))) &&
+    (!f.isNew || p.isNew) &&
+    (!f.sale || !!p.compareAt)
+  );
+  if (f.sort === "low") list = [...list].sort((a, b) => a.price - b.price);
+  if (f.sort === "high") list = [...list].sort((a, b) => b.price - a.price);
+  if (f.sort === "new") list = [...list].sort((a, b) => Number(b.isNew) - Number(a.isNew));
+  if (f.sort === "bestsellers") list = [...list].sort((a, b) => Number(b.badge === "Bestseller") - Number(a.badge === "Bestseller"));
+  return list;
+}
+
+export const relatedProducts = (p: Product, n = 4) =>
+  [...PRODUCTS.filter((x) => x.id !== p.id && x.category === p.category), ...PRODUCTS.filter((x) => x.id !== p.id && x.category !== p.category && x.kind !== p.kind)].slice(0, n);

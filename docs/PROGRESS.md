@@ -30,7 +30,8 @@ All motion is CSS (keyframes plus `animation-timeline` for scroll effects). GSAP
 - ✅ Design system ported (`globals.css`)
 - ✅ Layout: header, mega menu, search, mobile menu, footer, bag drawer, quick view, toast
 - ✅ Homepage: all 8 sections, checked in Chrome (desktop) and at 360px (no horizontal overflow)
-- ⬜ /shop, /shop/[category], /collections, /product/[slug], /search
+- ✅ /shop, /shop/[category], /collections, /collections/[slug], /search: sticky toolbar, filter drawer (price band, colour family, new, sale), sort, 3/4-column density, empty state. Filters live in the URL, so every filtered view can be shared and server-rendered. Checked in Chrome, and at 360px with no overflow.
+- ✅ /product/[slug]: 4-view gallery, colour, quantity, add to bag, wishlist, Dhaka/outside delivery estimate, details sections, "Complete the look", sticky add-to-bag bar on phones, Product and BreadcrumbList JSON-LD, canonical URLs. Checked in Chrome.
 - ⬜ /wishlist, /cart, /checkout, /order-confirmation/[orderId]
 - ⬜ /login, /register, /account (+ orders, addresses), /about, /contact, policy pages
 
