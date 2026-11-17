@@ -25,7 +25,7 @@ All motion is CSS (keyframes plus `animation-timeline` for scroll effects). GSAP
 
 **Migration rules:** class names, tokens and keyframes are copied 1:1 into `src/app/globals.css`. Fonts load through `next/font` (Fraunces, Manrope). No shadcn defaults.
 
-## Phase 2 — React / Next.js migration 🟡
+## Phase 2 — React / Next.js migration ✅ (all designed pages ported)
 - ✅ App scaffold: Next.js 15 App Router, TypeScript, Tailwind v4, Zustand, Zod
 - ✅ Design system ported (`globals.css`)
 - ✅ Layout: header, mega menu, search, mobile menu, footer, bag drawer, quick view, toast
@@ -36,7 +36,18 @@ All motion is CSS (keyframes plus `animation-timeline` for scroll effects). GSAP
 - ✅ /cart: free-delivery progress, quantity, save for later, remove with Undo, promo code, order summary. Checked in Chrome.
 - 🟡 /checkout: the 3-step design (contact and address with validation, delivery options, payment) is built and checked. **Placing an order is not switched on yet**: the button explains that nothing was placed or sent. Real orders arrive in Phase 6.
 - 🟡 /order-confirmation/[orderId]: design built. Only `/order-confirmation/sample` exists (labelled as a sample); every other id returns 404 until Phase 6 loads real orders.
-- ⬜ /login, /register, /account (+ orders, addresses), /about, /contact, policy pages
+- 🟡 /login, /register: split-screen design, tabs (switch the URL), validation, show/hide password, strength hint, forgot-password view. **Submitting does nothing yet** and says so; accounts arrive in Phase 5.
+- 🟡 /account, /account/orders, /account/orders/[id], /account/addresses, /account/profile: full design, clearly labelled **"Preview with sample data"**. Address and profile edits are not saved. "Buy again" adds the pieces to the real bag. Phase 5 swaps the sample data for the signed-in customer and protects these routes.
+- ✅ /about: hero, beliefs, 4-step process (selectable), materials, showroom call to action.
+- 🟡 /contact: topic pills (also `?topic=visit` from the About page), order-number and visit fields, validation, FAQ with FAQPage JSON-LD. **Messages are not sent yet** (needs an email provider); the success screen says so.
+- ✅ /shipping-policy, /return-policy, /privacy-policy, /terms: no design existed, so they reuse the design's type, pills and accents (`components/PolicyPage.tsx`). ⚠️ The wording is a draft based on the delivery/returns facts already on the site; the owner must review it (and have privacy/terms checked legally) before launch.
+
+All of the above checked in Chrome and at 360px with no horizontal overflow.
+
+**Needs your input before launch:**
+- Showroom address, phone and email are still the design's placeholders, in one file: `src/lib/site.ts`.
+- Policy wording (see above).
+- The bag's trust line says "bKash · Nagad · Cards · Cash on delivery"; only Cash on Delivery works until Phase 6. The Contact FAQ already says the others are coming.
 
 **Fixes made during migration (no visual change on desktop):**
 - Shop the Room on phones: `aspect-ratio: 16/9` plus `min-height` forced it to 746px wide and cut off the right-hand hotspots. Phones now use a fixed 460px height.
