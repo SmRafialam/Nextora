@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
 import { Overlays } from "@/components/shop/Overlays";
+import { CatalogProvider } from "@/components/CatalogProvider";
+import { getAllProducts } from "@/server/catalog";
 
 const fraunces = Fraunces({ subsets: ["latin"], weight: "variable", style: ["normal", "italic"], axes: ["opsz"], variable: "--font-fraunces", display: "swap" });
 const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-manrope", display: "swap" });
@@ -14,13 +16,15 @@ export const metadata: Metadata = {
 };
 export const viewport: Viewport = { themeColor: "#F8F5EF" };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${fraunces.variable} ${manrope.variable}`}>
       {/* suppressHydrationWarning: browser extensions (e.g. Grammarly) inject attributes on <body>. */}
       <body suppressHydrationWarning>
-        {children}
-        <Overlays />
+        <CatalogProvider products={await getAllProducts()}>
+          {children}
+          <Overlays />
+        </CatalogProvider>
       </body>
     </html>
   );

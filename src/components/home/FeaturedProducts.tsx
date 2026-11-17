@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { featuredProducts } from "@/lib/catalog";
+import { featuredProducts } from "@/server/catalog";
 import { ProductCard } from "@/components/shop/ProductCard";
 
-export function FeaturedProducts() {
+export async function FeaturedProducts() {
   return (
     <section id="featured" className="nx-wrap" style={{ paddingTop: 120, paddingBottom: 40 }}>
       <div className="nx-reveal nx-sec-head">
@@ -13,7 +13,7 @@ export function FeaturedProducts() {
         <Link className="nx-link" href="/shop" style={{ fontWeight: 600 }}>View all products</Link>
       </div>
       <div className="nx-prod">
-        {featuredProducts().map((p) => <ProductCard key={p.id} p={p} />)}
+        {(await featuredProducts()).map((p) => <ProductCard key={p.id} p={p} />)}
       </div>
     </section>
   );

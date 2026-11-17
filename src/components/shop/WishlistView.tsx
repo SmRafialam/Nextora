@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { PRODUCTS } from "@/lib/catalog";
+import { useCatalog } from "@/components/CatalogProvider";
 import { formatBDT } from "@/lib/format";
 import { useMounted } from "@/lib/useMounted";
 import { useShop } from "@/store/shop";
@@ -8,6 +8,7 @@ import { ProductArt } from "@/components/ProductArt";
 import { IconClose, IconHeart } from "@/components/icons";
 
 export function WishlistView() {
+  const { products: PRODUCTS } = useCatalog();
   const mounted = useMounted();
   const wish = useShop((s) => s.wish);
   const { add, say, setWish, toggleWish } = useShop();

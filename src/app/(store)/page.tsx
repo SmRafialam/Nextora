@@ -6,8 +6,9 @@ import { Editorial } from "@/components/home/Editorial";
 import { NewArrivals } from "@/components/home/NewArrivals";
 import { Inspiration } from "@/components/home/Inspiration";
 import { Newsletter } from "@/components/home/Newsletter";
+import { newArrivals } from "@/server/catalog";
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <>
       <Hero />
@@ -15,7 +16,7 @@ export default function HomePage() {
       <FeaturedProducts />
       <ShopTheRoom />
       <Editorial />
-      <NewArrivals />
+      <NewArrivals items={await newArrivals()} />
       <Inspiration />
       <Newsletter />
     </>

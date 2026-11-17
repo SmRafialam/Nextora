@@ -1,0 +1,20 @@
+# Local development database. Production uses a managed PostgreSQL instead.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: nestora-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nestora
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: nestora
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - nestora-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nestora -d nestora"]
+      interval: 5s
+      retries: 10
+volumes:
+  nestora-pg:

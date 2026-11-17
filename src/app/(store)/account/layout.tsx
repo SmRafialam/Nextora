@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SAMPLE_ADDRESSES, SAMPLE_ORDERS, SAMPLE_USER } from "@/lib/sampleAccount";
+import { SAMPLE_ADDRESSES, SAMPLE_ORDER_COUNT, SAMPLE_USER } from "@/lib/sampleAccount";
 import { AccountNav } from "@/components/account/AccountNav";
 
 export const metadata: Metadata = { title: { default: "Your account", template: "%s — Nestora" }, robots: { index: false } };
@@ -20,7 +20,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         <Link href="/login" style={{ fontSize: 13, textDecoration: "underline", textUnderlineOffset: 3, padding: "10px 0" }}>Sign out</Link>
       </div>
       <div className="nx-acct">
-        <AccountNav orders={SAMPLE_ORDERS.length} addresses={SAMPLE_ADDRESSES.length} />
+        <AccountNav orders={SAMPLE_ORDER_COUNT} addresses={SAMPLE_ADDRESSES.length} />
         <div className="nx-body">{children}</div>
       </div>
     </section>

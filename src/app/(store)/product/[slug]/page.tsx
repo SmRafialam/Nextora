@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PRODUCTS, getCategory, getProductBySlug, relatedProducts } from "@/lib/catalog";
+import { getAllProducts, getCategory, getProductBySlug, relatedProducts } from "@/server/catalog";
 import { formatBDT } from "@/lib/format";
 import { ProductDetail } from "@/components/shop/ProductDetail";
 import { ProductArt } from "@/components/ProductArt";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return PRODUCTS.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await getAllProducts()).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const p = getProductBySlug((await params).slug);
+  const p = await getProductBySlug((await params).slug);
   if (!p) return {};
   return {
     title: p.name,
@@ -24,9 +24,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductPage({ params }: Props) {
-  const p = getProductBySlug((await params).slug);
+  const p = await getProductBySlug((await params).slug);
   if (!p) notFound();
-  const cat = getCategory(p.category);
+  const [cat, related] = await Promise.all([getCategory(p.category), relatedProducts(p)]);
   const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const jsonLd = {
     "@context": "https://schema.org",
@@ -38,7 +38,7 @@ export default async function ProductPage({ params }: Props) {
     category: cat?.name,
     material: p.material,
     color: p.colors.map((c) => c.name).join(", "),
-    offers: { "@type": "Offer", url: `${site}/product/${p.slug}`, priceCurrency: "BDT", price: p.price, availability: "https://schema.org/InStock" },
+    offers: { "@type": "Offer", url: `${site}/product/${p.slug}`, priceCurrency: "BDT", price: p.price, availability: p.stock.some((n) => n > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" },
   };
   const crumbsLd = {
     "@context": "https://schema.org",
@@ -71,7 +71,7 @@ export default async function ProductPage({ params }: Props) {
           <Link className="nx-link" href="/shop" style={{ fontWeight: 600 }}>Shop all</Link>
         </div>
         <div className="nx-grid4">
-          {relatedProducts(p).map((r) => (
+          {related.map((r) => (
             <Link key={r.id} href={`/product/${r.slug}`} className="nx-card nx-reveal" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <span className="nx-zoom" style={{ display: "block", aspectRatio: "1 / 1", borderRadius: 4, background: r.bg }}><span className="nx-art" style={{ position: "absolute", inset: "16%", display: "block" }}><ProductArt kind={r.kind} fill={r.colors[0].hex} /></span></span>
               <span style={{ display: "flex", justifyContent: "space-between", gap: 12 }}><span className="nx-f" style={{ fontSize: 18 }}>{r.name}</span><span style={{ fontSize: 14, fontWeight: 600, whiteSpace: "nowrap" }}>{formatBDT(r.price)}</span></span>

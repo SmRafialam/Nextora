@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { ORDER_STEPS, SAMPLE_ORDERS, fmtDate, statusPill } from "@/lib/sampleAccount";
+import { ORDER_STEPS, fmtDate, statusPill } from "@/lib/sampleAccount";
+import { getSampleOrders } from "@/server/sampleOrders";
 import { Thumbs } from "@/components/account/OrderBits";
 import { WishCount } from "@/components/account/AccountNav";
 
-export default function AccountOverview() {
+export default async function AccountOverview() {
+  const SAMPLE_ORDERS = await getSampleOrders();
   const latest = SAMPLE_ORDERS[0];
   const li = ORDER_STEPS.indexOf(latest.status);
   return (

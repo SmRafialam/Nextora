@@ -4,6 +4,7 @@ import { formatBDT } from "@/lib/format";
 import { priceCart, type ShipId } from "@/lib/pricing";
 import { useMounted } from "@/lib/useMounted";
 import { useShop } from "@/store/shop";
+import { useCatalog } from "@/components/CatalogProvider";
 import { ProductArt } from "@/components/ProductArt";
 import Link from "next/link";
 
@@ -33,6 +34,7 @@ export function validateContact(v: Form): Errs {
 
 export function CheckoutView() {
   const mounted = useMounted();
+  const { getProduct } = useCatalog();
   const cart = useShop((s) => s.cart);
   const promo = useShop((s) => s.promo);
   const [step, setStep] = useState(1);
@@ -44,7 +46,7 @@ export function CheckoutView() {
   const [errs, setErrs] = useState<Errs>({});
   const [v, setV] = useState<Form>({ name: "", phone: "", email: "", address: "", area: "", city: "Dhaka", note: "" });
   const inDhaka = v.city === "Dhaka";
-  const t = priceCart(mounted ? cart : [], { promo, ship, inDhaka });
+  const t = priceCart(mounted ? cart : [], getProduct, { promo, ship, inDhaka });
 
   const on = (k: keyof Form) => (ev: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setV({ ...v, [k]: ev.target.value });

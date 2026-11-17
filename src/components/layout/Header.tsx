@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useShop } from "@/store/shop";
 import { useMounted } from "@/lib/useMounted";
-import { PRODUCTS } from "@/lib/catalog";
+import { useCatalog } from "@/components/CatalogProvider";
 import { ProductArt } from "@/components/ProductArt";
 import { IconBag, IconClose, IconHeart, IconMenu, IconSearch, IconUser } from "@/components/icons";
 
@@ -17,6 +17,7 @@ const NAV = [
 const MOBILE = [{ href: "/shop", label: "Shop" }, ...NAV, { href: "/wishlist", label: "Wishlist" }, { href: "/account", label: "Account" }];
 
 export function Header() {
+  const { products: PRODUCTS } = useCatalog();
   const path = usePathname();
   const mounted = useMounted();
   const cart = useShop((s) => s.cart);
@@ -39,7 +40,7 @@ export function Header() {
   const hits = useMemo(() => {
     const t = q.trim().toLowerCase();
     return (t ? PRODUCTS.filter((p) => `${p.name} ${p.meta} ${p.type}`.toLowerCase().includes(t)) : PRODUCTS.slice(0, 5)).slice(0, 6);
-  }, [q]);
+  }, [q, PRODUCTS]);
 
   return (
     <header style={{ position: "sticky", top: 0, zIndex: 40, background: "rgba(248,245,239,.86)", backdropFilter: "saturate(140%) blur(14px)", WebkitBackdropFilter: "saturate(140%) blur(14px)", borderBottom: "1px solid rgba(34,35,33,.08)" }}>

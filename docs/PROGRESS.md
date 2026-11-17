@@ -61,11 +61,20 @@ All of the above checked in Chrome and at 360px with no horizontal overflow.
 
 **Pricing rules** (`src/lib/pricing.ts`): free Dhaka standard delivery from ৳ 15,000 (otherwise ৳ 600), Express ৳ 1,200, outside Dhaka ৳ 1,500, coupon NESTORA10 = 10%. Phase 6 recomputes all totals on the server from these rules; the browser's totals are display only.
 
-**Temporary:** `src/lib/catalog.ts` is static data, replaced by Prisma queries in Phase 4. Coupons are a hard-coded list until Phase 8. The cart, wishlist and applied promo code live client-side in a persisted Zustand store until Phase 3/4 adds server carts.
+**Temporary:** Coupons are a hard-coded list until Phase 8. The cart, wishlist and applied promo code live client-side in a persisted Zustand store until Phase 3/4 adds server carts.
 
 ## Phase 3 — Storefront functionality ⬜
-## Phase 4 — Database and backend ⬜
-Plan: PostgreSQL 16 in Docker (Docker 24 is installed; `psql` is not), Prisma, money stored as integer paisa.
+## Phase 4 — Database and backend 🟡
+- ✅ Schema (`prisma/schema.prisma`): categories, products, colour **variants with SKU, price and stock**, collections, users (roles), addresses, carts (user or guest token), wishlists, coupons, orders (unique `idempotencyKey`, price snapshots per line, status history), payments (unique provider reference), refunds, reviews (one per customer per product, moderation status), newsletter, audit log. Money is integer **paisa** everywhere.
+- ✅ Seed (`npm run db:seed`): the 16 pieces, 8 categories, 4 collections and the NESTORA10 coupon from the design. Re-running never overwrites stock. Seed stock is a placeholder (6 for furniture ≥ ৳ 20,000, 24 otherwise) until real figures are entered in the admin.
+- ✅ Storefront reads come from PostgreSQL (`src/server/catalog.ts`): home, shop, categories, filters, search, collections, product pages, related products. Filters (category, price band, colour family, new, sale, search) run as database queries. Product JSON-LD now reports real stock.
+- ✅ Client components (bag, quick view, header search, wishlist, checkout summary) read the same catalogue through `CatalogProvider`, loaded once by the root layout.
+- ✅ Local database: `docker-compose.yml` (PostgreSQL 16, bound to 127.0.0.1 only). Credentials live in `.env` (git-ignored); `.env.example` shows the shape.
+- ✅ Verified: database running in Docker, migration `init` applied, seed loaded (8 categories, 16 products, 36 variants, 4 collections, 1 coupon); every storefront route returns 200, filters give the same results as before, bag and product JSON-LD checked in Chrome.
+- ⬜ Server cart, server wishlist and server-side coupon checks: Phase 5/6, once customers can sign in.
+
+**Run locally:** `npm run db:up` → `npx prisma migrate dev` → `npm run db:seed` → `npm run dev`.
+
 ## Phase 5 — Authentication ⬜
 ## Phase 6 — Checkout and orders ⬜
 Cash on Delivery will be fully working. SSLCommerz, bKash and Nagad are ⛔ until sandbox credentials are provided; they will be modular providers, and nothing will be marked paid without server-side verification.

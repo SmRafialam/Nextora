@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useShop } from "@/store/shop";
 import { useMounted } from "@/lib/useMounted";
-import { getProduct } from "@/lib/catalog";
+import { useCatalog } from "@/components/CatalogProvider";
 import { formatBDT } from "@/lib/format";
 import { ProductArt } from "@/components/ProductArt";
 import { IconArrowRight, IconCheck, IconClose, IconHeart } from "@/components/icons";
@@ -30,6 +30,7 @@ function useLockScroll(on: boolean) {
 }
 
 function CartDrawer() {
+  const { getProduct } = useCatalog();
   const { cart, cartOpen, openCart, setQty } = useShop();
   useLockScroll(cartOpen);
   if (!cartOpen) return null;
@@ -85,6 +86,7 @@ function CartDrawer() {
 }
 
 function QuickView() {
+  const { getProduct } = useCatalog();
   const { quickId, openQuick, add, say, wish, toggleWish } = useShop();
   const [ci, setCi] = useState(0);
   useEffect(() => setCi(0), [quickId]);

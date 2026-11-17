@@ -1,9 +1,10 @@
 "use client";
 import { useShop } from "@/store/shop";
-import { getProduct } from "@/lib/catalog";
+import { useCatalog } from "@/components/CatalogProvider";
 import { formatBDT } from "@/lib/format";
 
 export function QuickViewChip() {
+  const { getProduct } = useCatalog();
   const quick = useShop((s) => s.openQuick);
   const p = getProduct("halden");
   if (!p) return null;

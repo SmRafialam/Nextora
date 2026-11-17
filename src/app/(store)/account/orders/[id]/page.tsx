@@ -2,21 +2,22 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatBDT } from "@/lib/format";
-import { ORDER_STEPS, SAMPLE_ADDRESSES, SAMPLE_ORDERS, SAMPLE_USER, fmtDate, getSampleOrder, statusPill } from "@/lib/sampleAccount";
+import { ORDER_STEPS, SAMPLE_ADDRESSES, SAMPLE_USER, fmtDate, statusPill } from "@/lib/sampleAccount";
+import { getSampleOrder, getSampleOrders } from "@/server/sampleOrders";
 import { BuyAgain } from "@/components/account/OrderBits";
 import { ProductArt } from "@/components/ProductArt";
 
 type Props = { params: Promise<{ id: string }> };
 
-export function generateStaticParams() {
-  return SAMPLE_ORDERS.map((o) => ({ id: o.no }));
+export async function generateStaticParams() {
+  return (await getSampleOrders()).map((o) => ({ id: o.no }));
 }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `Order ${(await params).id}` };
 }
 
 export default async function OrderDetailPage({ params }: Props) {
-  const o = getSampleOrder((await params).id);
+  const o = await getSampleOrder((await params).id);
   if (!o) notFound();
   const li = ORDER_STEPS.indexOf(o.status);
   const addr = SAMPLE_ADDRESSES.find((a) => a.isDefault)!;

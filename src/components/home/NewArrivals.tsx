@@ -1,13 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { newArrivals } from "@/lib/catalog";
+import type { Product } from "@/lib/catalog";
 import { ArrivalCard } from "@/components/shop/ProductCard";
 import { IconArrowLeft, IconArrowRight } from "@/components/icons";
 
 const perView = (w: number) => (w <= 760 ? 1 : w <= 1080 ? 2 : 4);
 
-export function NewArrivals() {
-  const items = newArrivals();
+export function NewArrivals({ items }: { items: Product[] }) {
   const [slide, setSlide] = useState(0);
   const [n, setN] = useState(4);
   useEffect(() => {

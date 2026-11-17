@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { COLLECTIONS, getProduct } from "@/lib/catalog";
+import { getAllProducts, getCollections } from "@/server/catalog";
 import { ProductArt } from "@/components/ProductArt";
 import { IconArrowUpRight } from "@/components/icons";
 
@@ -10,7 +10,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/collections" },
 };
 
-export default function CollectionsPage() {
+export default async function CollectionsPage() {
+  const [COLLECTIONS, all] = await Promise.all([getCollections(), getAllProducts()]);
+  const live = new Set(all.map((p) => p.id));
   return (
     <>
       <section className="nx-wrap" style={{ paddingTop: 72, paddingBottom: 48 }}>
@@ -30,7 +32,7 @@ export default function CollectionsPage() {
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 <span className="nx-f" style={{ fontSize: 36, lineHeight: 1, letterSpacing: "-.02em" }}>{c.title[0]} <span style={{ fontStyle: "italic" }}>{c.title[1]}</span></span>
                 <span style={{ fontSize: 13.5, color: "#4A4B47", maxWidth: 360, lineHeight: 1.55 }}>{c.intro}</span>
-                <span style={{ fontSize: 12, color: "#5C5D59" }}>{c.ids.filter(getProduct).length} pieces</span>
+                <span style={{ fontSize: 12, color: "#5C5D59" }}>{c.ids.filter((id) => live.has(id)).length} pieces</span>
               </div>
               <span className="nx-cat-arrow" style={{ width: 44, height: 44, flex: "none", borderRadius: 99, background: "#222321", color: "#F8F5EF", display: "flex", alignItems: "center", justifyContent: "center" }}><IconArrowUpRight /></span>
             </div>

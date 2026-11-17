@@ -5,6 +5,7 @@ import { formatBDT } from "@/lib/format";
 import { FREE_SHIP_MIN, findCoupon, priceCart } from "@/lib/pricing";
 import { useMounted } from "@/lib/useMounted";
 import { useShop } from "@/store/shop";
+import { useCatalog } from "@/components/CatalogProvider";
 import { ProductArt } from "@/components/ProductArt";
 import { IconArrowRight } from "@/components/icons";
 import { TrustList } from "./TrustList";
@@ -13,12 +14,13 @@ const textBtn = { border: 0, background: "none", cursor: "pointer", fontSize: 13
 
 export function CartView() {
   const mounted = useMounted();
+  const { getProduct } = useCatalog();
   const cart = useShop((s) => s.cart);
   const promo = useShop((s) => s.promo);
   const { setQty, setCart, setPromo, say, setWish } = useShop();
   const [code, setCode] = useState<string | null>(null);
   const [err, setErr] = useState(false);
-  const t = priceCart(mounted ? cart : [], { promo });
+  const t = priceCart(mounted ? cart : [], getProduct, { promo });
   const left = FREE_SHIP_MIN - t.subtotal;
   const input = code ?? promo;
 

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { getProduct } from "@/lib/catalog";
+import { useCatalog } from "@/components/CatalogProvider";
 import { formatBDT } from "@/lib/format";
 import { useShop } from "@/store/shop";
 import { ProductArt } from "@/components/ProductArt";
@@ -41,6 +41,7 @@ function RoomScene() {
 }
 
 export function ShopTheRoom() {
+  const { getProduct } = useCatalog();
   const [open, setOpen] = useState<string | null>(null);
   const add = useShop((s) => s.add), say = useShop((s) => s.say), quick = useShop((s) => s.openQuick);
   const spot = SPOTS.find((s) => s.id === open);

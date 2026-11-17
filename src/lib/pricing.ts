@@ -1,6 +1,6 @@
 // Pricing rules shared by the bag, checkout and (from Phase 6) the server.
 // The server will recompute every total from these rules; client totals are display only.
-import { getProduct, type Product } from "./catalog";
+import type { Product } from "./catalog";
 import type { CartLine } from "@/store/shop";
 
 export const FREE_SHIP_MIN = 15000;
@@ -25,7 +25,9 @@ export function shippingOptions(subtotal: number, inDhaka: boolean): ShipOption[
 
 export type PricedLine = CartLine & { p: Product; color: Product["colors"][number]; total: number };
 
-export function priceCart(cart: CartLine[], opts: { promo?: string; ship?: ShipId; inDhaka?: boolean } = {}) {
+export type ProductLookup = (id: string) => Product | undefined;
+
+export function priceCart(cart: CartLine[], getProduct: ProductLookup, opts: { promo?: string; ship?: ShipId; inDhaka?: boolean } = {}) {
   const lines: PricedLine[] = [];
   for (const x of cart) {
     const p = getProduct(x.id);

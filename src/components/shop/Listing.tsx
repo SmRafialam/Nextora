@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { CATEGORIES, type Product } from "@/lib/catalog";
+import type { Product } from "@/lib/catalog";
+import { getCategories } from "@/server/catalog";
 import { ListingControls } from "./ListingControls";
 
 export type ListingProps = {
@@ -12,7 +13,8 @@ export type ListingProps = {
   showPills?: boolean;
 };
 
-export function Listing({ crumbs, title, intro, products, activeCategory, showPills = true }: ListingProps) {
+export async function Listing({ crumbs, title, intro, products, activeCategory, showPills = true }: ListingProps) {
+  const CATEGORIES = showPills ? await getCategories() : [];
   return (
     <>
       <section className="nx-wrap" style={{ paddingTop: 64, paddingBottom: 32 }}>

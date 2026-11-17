@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { formatBDT } from "@/lib/format";
-import { SAMPLE_ORDERS, fmtDate, statusPill } from "@/lib/sampleAccount";
+import { fmtDate, statusPill } from "@/lib/sampleAccount";
+import { getSampleOrders } from "@/server/sampleOrders";
 import { BuyAgain, Thumbs } from "@/components/account/OrderBits";
 
 export const metadata: Metadata = { title: "Orders" };
 
-export default function OrdersPage() {
+export default async function OrdersPage() {
+  const SAMPLE_ORDERS = await getSampleOrders();
   return (
     <div className="nx-pop" style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <h2 className="nx-sr">Your orders</h2>

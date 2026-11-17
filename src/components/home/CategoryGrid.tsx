@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { CATEGORIES } from "@/lib/catalog";
+import { getCategories } from "@/server/catalog";
 import { ProductArt } from "@/components/ProductArt";
 import { IconArrowUpRight } from "@/components/icons";
 
-export function CategoryGrid() {
+export async function CategoryGrid() {
+  const CATEGORIES = await getCategories();
   return (
     <section id="categories" className="nx-wrap" style={{ paddingTop: 128, paddingBottom: 40 }}>
       <div className="nx-reveal nx-sec-head">
