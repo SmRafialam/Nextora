@@ -11,12 +11,17 @@ type ShopState = {
   cartOpen: boolean;
   quickId: string | null;
   toast: string;
+  undo: (() => void) | null;
+  promo: string;
   add: (id: string, c?: number, q?: number) => void;
   setQty: (id: string, c: number, q: number) => void;
   toggleWish: (id: string) => boolean;
   openCart: (open: boolean) => void;
   openQuick: (id: string | null) => void;
-  say: (msg: string) => void;
+  say: (msg: string, undo?: () => void) => void;
+  setCart: (cart: CartLine[]) => void;
+  setWish: (wish: Record<string, true>) => void;
+  setPromo: (code: string) => void;
 };
 
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
@@ -29,6 +34,8 @@ export const useShop = create<ShopState>()(
       cartOpen: false,
       quickId: null,
       toast: "",
+      undo: null,
+      promo: "",
       add: (id, c = 0, q = 1) =>
         set((s) => {
           const hit = s.cart.find((x) => x.id === id && x.c === c);
@@ -45,12 +52,15 @@ export const useShop = create<ShopState>()(
       },
       openCart: (open) => set({ cartOpen: open }),
       openQuick: (id) => set({ quickId: id }),
-      say: (msg) => {
+      say: (msg, undo) => {
         clearTimeout(toastTimer);
-        set({ toast: msg });
-        toastTimer = setTimeout(() => set({ toast: "" }), 2600);
+        set({ toast: msg, undo: undo ?? null });
+        toastTimer = setTimeout(() => set({ toast: "", undo: null }), undo ? 4000 : 2600);
       },
+      setCart: (cart) => set({ cart }),
+      setWish: (wish) => set({ wish }),
+      setPromo: (promo) => set({ promo }),
     }),
-    { name: "nestora-shop", partialize: (s) => ({ cart: s.cart, wish: s.wish }) }
+    { name: "nestora-shop", partialize: (s) => ({ cart: s.cart, wish: s.wish, promo: s.promo }) }
   )
 );

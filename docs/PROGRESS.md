@@ -32,14 +32,25 @@ All motion is CSS (keyframes plus `animation-timeline` for scroll effects). GSAP
 - ✅ Homepage: all 8 sections, checked in Chrome (desktop) and at 360px (no horizontal overflow)
 - ✅ /shop, /shop/[category], /collections, /collections/[slug], /search: sticky toolbar, filter drawer (price band, colour family, new, sale), sort, 3/4-column density, empty state. Filters live in the URL, so every filtered view can be shared and server-rendered. Checked in Chrome, and at 360px with no overflow.
 - ✅ /product/[slug]: 4-view gallery, colour, quantity, add to bag, wishlist, Dhaka/outside delivery estimate, details sections, "Complete the look", sticky add-to-bag bar on phones, Product and BreadcrumbList JSON-LD, canonical URLs. Checked in Chrome.
-- ⬜ /wishlist, /cart, /checkout, /order-confirmation/[orderId]
+- ✅ /wishlist: saved pieces, remove, move to bag, move all, share (sends product links), "You may also love". Checked in Chrome.
+- ✅ /cart: free-delivery progress, quantity, save for later, remove with Undo, promo code, order summary. Checked in Chrome.
+- 🟡 /checkout: the 3-step design (contact and address with validation, delivery options, payment) is built and checked. **Placing an order is not switched on yet**: the button explains that nothing was placed or sent. Real orders arrive in Phase 6.
+- 🟡 /order-confirmation/[orderId]: design built. Only `/order-confirmation/sample` exists (labelled as a sample); every other id returns 404 until Phase 6 loads real orders.
 - ⬜ /login, /register, /account (+ orders, addresses), /about, /contact, policy pages
 
 **Fixes made during migration (no visual change on desktop):**
 - Shop the Room on phones: `aspect-ratio: 16/9` plus `min-height` forced it to 746px wide and cut off the right-hand hotspots. Phones now use a fixed 460px height.
 - `<body suppressHydrationWarning>`: browser extensions (Grammarly) inject attributes that caused a false hydration warning.
 
-**Temporary:** `src/lib/catalog.ts` is static data, replaced by Prisma queries in Phase 4. The cart and wishlist live client-side in a persisted Zustand store until Phase 3/4 adds server carts.
+**Design changes (with reasons):**
+- Checkout payment: the design's inline card-number fields are removed. Card payments will go through SSLCommerz's hosted page, so the site never handles card numbers (PCI scope). bKash, Nagad and card are shown but disabled until their sandbox credentials are configured; Cash on Delivery is the only selectable method.
+- Wishlist "Share list" shares the product links, because the list itself is stored only in this browser until accounts sync it.
+
+**Structure:** storefront routes live in the `src/app/(store)` route group (announcement bar, header, footer). `/checkout` has the design's minimal header and no footer; `/order-confirmation` has its own header plus the footer.
+
+**Pricing rules** (`src/lib/pricing.ts`): free Dhaka standard delivery from ৳ 15,000 (otherwise ৳ 600), Express ৳ 1,200, outside Dhaka ৳ 1,500, coupon NESTORA10 = 10%. Phase 6 recomputes all totals on the server from these rules; the browser's totals are display only.
+
+**Temporary:** `src/lib/catalog.ts` is static data, replaced by Prisma queries in Phase 4. Coupons are a hard-coded list until Phase 8. The cart, wishlist and applied promo code live client-side in a persisted Zustand store until Phase 3/4 adds server carts.
 
 ## Phase 3 — Storefront functionality ⬜
 ## Phase 4 — Database and backend ⬜

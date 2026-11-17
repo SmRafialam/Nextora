@@ -205,4 +205,22 @@ header > .nx-wrap{grid-template-columns:auto minmax(0,1fr) auto!important;gap:4p
 .nx-wm-sub{display:none!important}
 header .nx-icon{width:40px;height:40px}
 }
+/* Cart, checkout, confirmation (ported from nestora.css and the page styles) */
+.nx-main-aside{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:56px;align-items:start}
+.nx-opt{display:flex;align-items:center;gap:14px;padding:18px;border-radius:6px;border:1px solid rgba(34,35,33,.18);background:#FFFFFF;cursor:pointer;text-align:left;width:100%;transition:border-color .3s,box-shadow .3s}
+.nx-opt[aria-pressed="true"]{border-color:#222321;box-shadow:inset 0 0 0 1px #222321}
+.nx-opt:disabled{cursor:not-allowed;opacity:.6}
+.nx-radio{width:20px;height:20px;flex:none;border-radius:99px;border:1.5px solid rgba(34,35,33,.4);display:flex;align-items:center;justify-content:center}
+.nx-opt[aria-pressed="true"] .nx-radio{border-color:#222321}
+.nx-opt[aria-pressed="true"] .nx-radio::after{content:"";width:10px;height:10px;border-radius:99px;background:#222321}
+.nx-line{display:grid;grid-template-columns:140px minmax(0,1fr) auto;gap:24px;padding:28px 0;border-bottom:1px solid rgba(34,35,33,.1)}
+.nx-step{border-top:1px solid rgba(34,35,33,.12);padding:28px 0}
+.nx-num{width:32px;height:32px;flex:none;border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.nx-edit{border:0;background:none;cursor:pointer;font-size:13px;text-decoration:underline;text-underline-offset:3px;min-height:40px}
+.nx-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.nx-info{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.nx-draw{stroke-dasharray:30;stroke-dashoffset:30;animation:nxDraw .8s .3s var(--nx-ease) forwards}
+@keyframes nxDraw{to{stroke-dashoffset:0}}
+@media (max-width:1080px){.nx-main-aside{grid-template-columns:minmax(0,1fr);gap:40px}}
+@media (max-width:760px){.nx-line{grid-template-columns:96px minmax(0,1fr);gap:16px}.nx-line .nx-lt{grid-column:2}.nx-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.nx-info{grid-template-columns:minmax(0,1fr)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

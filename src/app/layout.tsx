@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
-import { AnnouncementBar, Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
 import { Overlays } from "@/components/shop/Overlays";
 
 const fraunces = Fraunces({ subsets: ["latin"], weight: "variable", style: ["normal", "italic"], axes: ["opsz"], variable: "--font-fraunces", display: "swap" });
@@ -21,10 +19,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={`${fraunces.variable} ${manrope.variable}`}>
       {/* suppressHydrationWarning: browser extensions (e.g. Grammarly) inject attributes on <body>. */}
       <body suppressHydrationWarning>
-        <AnnouncementBar />
-        <Header />
-        <main id="main">{children}</main>
-        <Footer />
+        {children}
         <Overlays />
       </body>
     </html>

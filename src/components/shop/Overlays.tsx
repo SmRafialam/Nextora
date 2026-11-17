@@ -10,7 +10,7 @@ import { IconArrowRight, IconCheck, IconClose, IconHeart } from "@/components/ic
 import { Swatches } from "./ProductCard";
 import { useState } from "react";
 
-export const FREE_SHIP_MIN = 15000;
+import { FREE_SHIP_MIN } from "@/lib/pricing";
 
 export function Overlays() {
   const mounted = useMounted();
@@ -123,11 +123,14 @@ function QuickView() {
 function Toast() {
   const toast = useShop((s) => s.toast);
   const openCart = useShop((s) => s.openCart);
+  const undo = useShop((s) => s.undo);
   if (!toast) return null;
+  const linkStyle = { border: 0, background: "none", color: "#E2B49C", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3, padding: "4px 0" } as const;
   return (
     <div className="nx-pop" role="status" style={{ position: "fixed", left: "50%", bottom: 24, zIndex: 90, transform: "translateX(-50%)", background: "#222321", color: "#F8F5EF", padding: "14px 22px", borderRadius: 99, fontSize: 14, display: "flex", alignItems: "center", gap: 12, boxShadow: "0 20px 40px rgba(0,0,0,.2)", whiteSpace: "nowrap", maxWidth: "calc(100vw - 32px)" }}>
       <IconCheck color="#C9D1C6" />{toast}
-      {/bag/.test(toast) && <button onClick={() => openCart(true)} style={{ border: 0, background: "none", color: "#E2B49C", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3, padding: 0 }}>View bag</button>}
+      {undo ? <button onClick={() => { undo(); useShop.setState({ toast: "", undo: null }); }} style={linkStyle}>Undo</button>
+        : /added to your bag/.test(toast) && <button onClick={() => openCart(true)} style={linkStyle}>View bag</button>}
     </div>
   );
 }
