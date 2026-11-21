@@ -61,7 +61,7 @@ All of the above checked in Chrome and at 360px with no horizontal overflow.
 
 **Pricing rules** (`src/lib/pricing.ts`): free Dhaka standard delivery from ৳ 15,000 (otherwise ৳ 600), Express ৳ 1,200, outside Dhaka ৳ 1,500, coupon NESTORA10 = 10%. Phase 6 recomputes all totals on the server from these rules; the browser's totals are display only.
 
-**Temporary:** Coupons are a hard-coded list until Phase 8. The cart, wishlist and applied promo code live client-side in a persisted Zustand store until Phase 3/4 adds server carts.
+**Temporary:** Coupons are a hard-coded list until Phase 8.
 
 ## Phase 3 — Storefront functionality ⬜
 ## Phase 4 — Database and backend 🟡
@@ -75,7 +75,18 @@ All of the above checked in Chrome and at 360px with no horizontal overflow.
 
 **Run locally:** `npm run db:up` → `npx prisma migrate dev` → `npm run db:seed` → `npm run dev`.
 
-## Phase 5 — Authentication ⬜
+## Phase 5 — Authentication ✅
+- ✅ Auth.js v5, email + password (bcrypt, cost 12), JWT session in an httpOnly cookie (Secure on HTTPS). `/account/*` is guarded by middleware and again on the server; `/admin/*` requires the ADMIN role (admin UI is Phase 7).
+- ✅ Register, sign in, sign out, "next" redirect back to the page you came from (same-site paths only).
+- ✅ Forgot / reset password: one-time link (only a SHA-256 hash stored), expires in 1 hour, can't be reused. Resetting signs out every other session (`sessionVersion`). Same answer whether or not the email exists.
+- ✅ Email verification: 24-hour link; confirming needs a button press, so email scanners can't use it up. Banner with "Resend link" until confirmed.
+- ⛔ **Email sending is not configured.** Without `SMTP_*` in `.env`, links are printed to the dev-server console in development and no email is sent in production (reset then tells customers to contact you). Add SMTP details to switch it on.
+- ✅ Rate limits: register 5/15 min per IP, sign-in 8/15 min per IP + email, reset 5/15 min, resend 3/hour. Per server process only; Redis in Phase 10.
+- ✅ Account pages use real data: profile (name, mobile, preferences, newsletter opt-in), up to 10 addresses with all 64 districts and a default, orders and order detail (only your own orders; empty until Phase 6 creates them).
+- ✅ Bag and wishlist saved to the account: guest items merge in once on first sign-in, every change is saved, quantities are capped at stock on the server, and signing out clears the bag on that device.
+- ✅ Checked in Chrome: validation errors, register → account, guest bag merged, email confirmation, sign out clears bag, wrong password message, sign in restores bag and returns to the requested page, profile and addresses persist, password reset and link reuse rejected. No horizontal scroll at 360px.
+- Not checked in a browser: that a reset signs out a *second* device (covered by the `sessionVersion` check in `src/auth.ts`).
+
 ## Phase 6 — Checkout and orders ⬜
 Cash on Delivery will be fully working. SSLCommerz, bKash and Nagad are ⛔ until sandbox credentials are provided; they will be modular providers, and nothing will be marked paid without server-side verification.
 ## Phase 7 — Admin dashboard ⬜

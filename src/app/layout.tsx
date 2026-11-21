@@ -4,6 +4,8 @@ import "./globals.css";
 import { Overlays } from "@/components/shop/Overlays";
 import { CatalogProvider } from "@/components/CatalogProvider";
 import { getAllProducts } from "@/server/catalog";
+import { ShopSync } from "@/components/shop/ShopSync";
+import { auth } from "@/auth";
 
 const fraunces = Fraunces({ subsets: ["latin"], weight: "variable", style: ["normal", "italic"], axes: ["opsz"], variable: "--font-fraunces", display: "swap" });
 const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-manrope", display: "swap" });
@@ -24,6 +26,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <CatalogProvider products={await getAllProducts()}>
           {children}
           <Overlays />
+          <ShopSync userId={(await auth())?.user?.id ?? null} />
         </CatalogProvider>
       </body>
     </html>

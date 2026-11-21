@@ -13,6 +13,8 @@ type ShopState = {
   toast: string;
   undo: (() => void) | null;
   promo: string;
+  /** Account this browser copy was last synced with (null = guest). */
+  syncedUser: string | null;
   add: (id: string, c?: number, q?: number) => void;
   setQty: (id: string, c: number, q: number) => void;
   toggleWish: (id: string) => boolean;
@@ -36,6 +38,7 @@ export const useShop = create<ShopState>()(
       toast: "",
       undo: null,
       promo: "",
+      syncedUser: null,
       add: (id, c = 0, q = 1) =>
         set((s) => {
           const hit = s.cart.find((x) => x.id === id && x.c === c);
@@ -61,6 +64,6 @@ export const useShop = create<ShopState>()(
       setWish: (wish) => set({ wish }),
       setPromo: (promo) => set({ promo }),
     }),
-    { name: "nestora-shop", partialize: (s) => ({ cart: s.cart, wish: s.wish, promo: s.promo }) }
+    { name: "nestora-shop", partialize: (s) => ({ cart: s.cart, wish: s.wish, promo: s.promo, syncedUser: s.syncedUser }) }
   )
 );
